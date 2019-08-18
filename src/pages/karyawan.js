@@ -1,60 +1,61 @@
 import React, {Component} from 'react';
-import Axios from 'axios';
+import Firebase from '../firebase'
 
 class Karyawan extends Component {
 
     constructor(){
         super();
         this.state = {
-            karyawan: []
+            karyawanList: []
         }
+        this.inputElement = null;
     }
 
     componentWillMount(){
-        Axios
-        .get('http://localhost:3001/karyawan')
-        .then((response)=>{
+        let karyawanRef = Firebase.database().ref('karyawan').orderByKey().limitToLast(100);
+        karyawanRef.on('value', snapshot =>{
+            let values = snapshot.val() || {}
             this.setState({
-                karyawan : response.data
-            })
+                karyawanList: Object.keys(values).map(key => {
+                    return {
+                        key: key,
+                        value: values[key]
+                    }
+                })
+            });
+        })
+    }
+
+    addKaryawan(e){
+        e.preventDefault();
+        Firebase.database().ref('karyawan').push(this.inputElement.value);
+        this.inputElement.value = '';
+    }
+
+    deleteKaryawan(id){
+        Firebase.database().ref('karyawan/'+id).remove();
+    }
+
+    renderKaryawan(karyawanList){
+        return karyawanList.map((karyawan, i) => {
+            return <li key={i}>{karyawan.value}&nbsp;&nbsp;&nbsp;
+            <span onClick={e => this.deleteKaryawan(karyawan.key)}>[del]</span>
+            </li>
         })
     }
 
     render(){
-
-        var css = {
-            border: '1px solid black',
-            borderCollapse: 'collapse',
-            padding: '12px'
-        }
-
-        const data = this.state.karyawan.map((karyawan, index)=>{
-            var id = karyawan.id;
-            var nama = karyawan.nama;
-            var usia = karyawan.usia;
-            var kota = karyawan.kota;
-            return <tr style={css} key={index}>
-                <td style={css}>{id}</td>
-                <td style={css}>{nama}</td>
-                <td style={css}>{usia}</td>
-                <td style={css}>{kota}</td>
-            </tr>
-        })
-
         return(
             <div>
+                <h2>Input data karyawan :</h2>
+                <form onSubmit={this.addKaryawan.bind(this)}>
+                    <input type="text" ref={e => this.inputElement = e}/>
+                    <input type="submit"/>
+                </form>
                 <h2>Daftar Karyawan</h2>
-                <table style={css}>
-                    <tbody>
-                        <tr>
-                            <th style={css}>ID</th>
-                            <th style={css}>Nama</th>
-                            <th style={css}>Usia</th>
-                            <th style={css}>Kota</th>
-                        </tr>
-                        {data}
-                    </tbody>
-                </table>
+                <ul>
+                    {this.renderKaryawan(this.state.karyawanList)}
+                </ul>
             </div>
         )
     }
