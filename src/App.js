@@ -4,6 +4,7 @@ import {Link, Route} from 'react-router-dom'
 
 import Karyawan from './pages/karyawan';
 import Upload from './pages/Upload';
+import { provider, auth } from './firebase';
 
 class App extends Component {
 
@@ -12,8 +13,23 @@ class App extends Component {
     this.state = {
       film: [],
       post: [],
-      user: []
+      user: [],
+      loggedUser: null
     }
+  }
+
+  async login(){
+    const result = await auth().signInWithPopup(provider);
+    this.setState({
+      loggedUser: result.user
+    });
+  }
+
+  async logout(){
+    await auth().signOut();
+    this.setState({
+      loggedUser: null
+    })
   }
 
   componentWillMount(){
@@ -77,6 +93,12 @@ class App extends Component {
 
     return(
       <div>
+        <p>
+          {this.state.loggedUser ? `Hi, ${this.state.loggedUser.displayName}!` : `Hi!`}
+        </p>
+        <button onClick={this.login.bind(this)}>Login with Google</button>
+        <button onClick={this.logout.bind(this)}>Logout</button>
+
         <h1>Ini portofolio saya</h1>
 
         <ul>
