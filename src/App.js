@@ -3,6 +3,7 @@ import Axios from 'axios';
 import {Link, Route} from 'react-router-dom'
 
 import Karyawan from './pages/karyawan';
+import Upload from './pages/Upload';
 
 class App extends Component {
 
@@ -81,10 +82,12 @@ class App extends Component {
         <ul>
           <li><Link to = "/">Home</Link></li>
           <li><Link to = "/karyawan">Karyawan</Link></li>
+          <li><Link to = "/upload">upload</Link></li>
         </ul>
         <div>
           <Route exact path = "/" component = {'Home'}/>
           <Route exact path = "/karyawan" component = {Karyawan}/>
+          <Route exact path = "/upload" component = {Upload}/>
         </div>
 
         <h2>Daftar Film</h2>
