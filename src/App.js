@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
+import {Link, Route} from 'react-router-dom'
+
+import Karyawan from './pages/karyawan';
 
 class App extends Component {
 
@@ -37,16 +40,6 @@ class App extends Component {
         user: dataUser.data
       })
     })
-
-    var jktURL  = 'http://api.jakarta.go.id/v1/puskesmas/';
-    var jktCONF = {
-      headers: {
-        'Authorization' : 'yy+kX9pGSdoS7/ncc+Zx/vO8W3U2KnlcElRf67Cnvw9i9wN1QaU5tLv8ISfIjTDO'
-      }
-    }
-
-    Axios
-    .get(jktURL)
   };
 
   render(){
@@ -84,6 +77,15 @@ class App extends Component {
     return(
       <div>
         <h1>Ini portofolio saya</h1>
+
+        <ul>
+          <li><Link to = "/">Home</Link></li>
+          <li><Link to = "/karyawan">Karyawan</Link></li>
+        </ul>
+        <div>
+          <Route exact path = "/" component = {'Home'}/>
+          <Route exact path = "/karyawan" component = {Karyawan}/>
+        </div>
 
         <h2>Daftar Film</h2>
         <ul>{renderDaftarFilm(this.state.film)}</ul>
