@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 import {Link, Route} from 'react-router-dom'
+import { connect } from 'react-redux';
 
-import Karyawan from './pages/karyawan';
+import Karyawan from './pages/Karyawan';
 import Upload from './pages/Upload';
+import Counter from './pages/Counter';
 import { provider, auth } from './firebase';
 
 class App extends Component {
@@ -103,13 +105,15 @@ class App extends Component {
 
         <ul>
           <li><Link to = "/">Home</Link></li>
-          <li><Link to = "/karyawan">Karyawan</Link></li>
-          <li><Link to = "/upload">upload</Link></li>
+          <li><Link to = "/Karyawan">Karyawan</Link></li>
+          <li><Link to = "/Upload">Upload</Link></li>
+          <li><Link to = "/Counter">Counter [ {this.props.count} ]</Link></li>
         </ul>
         <div>
           <Route exact path = "/" component = {'Home'}/>
-          <Route exact path = "/karyawan" component = {Karyawan}/>
-          <Route exact path = "/upload" component = {Upload}/>
+          <Route exact path = "/Karyawan" component = {Karyawan}/>
+          <Route exact path = "/Upload" component = {Upload}/>
+          <Route exact path = "/Counter" component = {Counter}/>
         </div>
 
         <h2>Daftar Film</h2>
@@ -135,4 +139,10 @@ class App extends Component {
   }
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+      count: state.count
+  };
+}
+
+export default connect(mapStateToProps)(App)
